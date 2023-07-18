@@ -1,3 +1,4 @@
+#following code use python to grab the stock index data from Yahoo Finance
 import yfinance as yf
 start_date = "1995-02-20"
 end_date = "2023-07-17"

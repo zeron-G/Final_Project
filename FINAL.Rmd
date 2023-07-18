@@ -8,7 +8,7 @@ output: html_document
 knitr::opts_chunk$set(echo = FALSE)
 ```
 
-
+#following code use R and the data from code_1 to generate plot
 ```{r}
 library(fpp2)
 library(rmarkdown)
