@@ -65,7 +65,66 @@ test(sz.ts)
 test(sz.tsd)
 test(sz.return)
 ```
+```{r}
+na.ts.ses<-ses(na.ts, h=100)
+na.ts.holt<-holt(na.ts, h=100)
+na.ts.sesd<-ses(na.ts,damped=TRUE, h=100)
+na.ts.holtd<-holt(na.ts,damped=TRUE, h=100)
+autoplot(na.ts.ses)
+autoplot(na.ts.holt)
+autoplot(na.ts.sesd)
+autoplot(na.ts.holtd)
+summary(na.ts.ses)
+summary(na.ts.holt)
+summary(na.ts.sesd)
+summary(na.ts.holtd)
+res.holtd<-residuals(na.ts.holtd)
+test(res.holtd)
+```
+```{r}
+checkresiduals(ss.tsd)
+```
+```{r}
+ets(ss.ts)
+autoplot(forecast::forecast(ets(ss.ts)))
+str(ss.ts)
+head(ss.ts)
 
+ss.ts.ses <- ses(ss.ts, h = 400)
+autoplot(ss.ts.ses) +
+  autolayer(ss.ts.ses$fitted)
+ss.ts.ses$model
+```
+```{r}
+ss.ts.meanf <- meanf(ss.ts, h=20)
+autoplot(ss.ts.meanf)
+# Plot last 100 values of series with forecasts
+autoplot(ss.ts.meanf, include=100)
+ss.ts.naive <- naive(ss.ts, h=20)
+autoplot(ss.ts.naive)
+# Plot last 100 values of series with forecasts
+autoplot(ss.ts.naive, include=100)
+ss.ts.snaive <- snaive(ss.ts, h=20)
+autoplot(ss.ts.snaive)
+# Plot last 100 values of series with forecasts
+autoplot(ss.ts.snaive, include=100)
+ss.ts.rwf <- rwf(ss.ts, h=20)
+autoplot(ss.ts.rwf)
+# Plot last 100 values of series with forecasts
+autoplot(ss.ts.rwf, include=100)
+```
+```{r}
+myts <- ts(NASDAQ[,"Close"], frequency=12, start=c(1995-02-21))
+myts.train <- window(myts, end=c(2010-02-21))
+myts.test <- window(myts, start=2010-2-21)
+
+autoplot(myts) +
+  autolayer(myts.train, series="Training") +
+  autolayer(myts.test, series="Test")
+fc <- snaive(myts.train)
+autoplot(fc,h=100)
+checkresiduals(fc)
+```
 
 
 
