@@ -1,0 +1,71 @@
+---
+title: "finalproject"
+date: "2023-07-17"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+
+```{r}
+library(fpp2)
+library(rmarkdown)
+library(itsmr)
+library(readr)
+```
+
+```{r}
+DJIA<-read_csv("data/DJIA.csv")
+SS_1<-read_csv("data/000001ss.csv")
+NASDAQ<-read_csv("data/NASDAQ.csv")
+SZ399001<-read_csv("data/399001sz.csv")
+```
+
+
+```{r}
+DJIA.ts <- ts(DJIA[,"Close"])
+ss.ts<-ts(SS_1[,"Close"])
+na.ts<-ts(NASDAQ[,"Close"])
+sz.ts<-ts(SZ399001[,"Close"])
+
+DJIA.tsd<-ts(DJIA[,"Close"]-DJIA[,"Open"])
+DJIA.return<-ts((DJIA[,"Close"]-DJIA[,"Open"])/DJIA[,"Open"])
+ss.tsd<-ts(SS_1[,"Close"]-SS_1[,"Open"])
+ss.return<-ts((SS_1[,"Close"]-SS_1[,"Open"])/SS_1[,"Open"])
+na.tsd<-ts(NASDAQ[,"Close"]-NASDAQ[,"Open"])
+na.return<-ts((NASDAQ[,"Close"]-NASDAQ[,"Open"])/NASDAQ[,"Open"])
+sz.tsd<-ts(SZ399001[,"Close"]-SZ399001[,"Open"])
+sz.return<-ts((SZ399001[,"Close"]-SZ399001[,"Open"])/SZ399001[,"Open"])
+
+
+autoplot(DJIA.ts)
+autoplot(DJIA.tsd)
+autoplot(DJIA.return)
+test(DJIA.ts)
+test(DJIA.tsd)
+test(DJIA.return)
+autoplot(ss.ts)
+autoplot(ss.tsd)
+autoplot(ss.return)
+test(ss.ts)
+test(ss.tsd)
+test(ss.return)
+autoplot(na.ts)
+autoplot(na.tsd)
+autoplot(na.return)
+test(na.ts)
+test(na.tsd)
+test(na.return)
+autoplot(sz.ts)
+autoplot(sz.tsd)
+autoplot(sz.return)
+test(sz.ts)
+test(sz.tsd)
+test(sz.return)
+```
+
+
+
+
