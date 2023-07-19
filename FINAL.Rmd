@@ -86,10 +86,18 @@ res.holtd<-residuals(na.ts.holtd)
 test(res.holtd)
 ```
 ```{r}
+na.arima<-auto.arima(na.ts)
+autoplot(na.arima)
+future <- forecast::forecast(na.arima, h=12)
+autoplot(future,include=100)
+```
+
+```{r}
 na.log<-log(na.ts)
 autoplot(ets(na.log))
 checkresiduals(ets(na.log))
 na.log2<-window(na.log,start=5000)
+plot(na.log)
 checkresiduals(ets(na.log2))
 ```
 

@@ -15,15 +15,15 @@ model = ARIMA(log_data, order=(5,1,0))
 # Set 'Date' as the index
 data.set_index('Date', inplace=True)
 
-# # Plot the 'Close' column
-# plt.figure(figsize=(10,6))
-# plt.plot(log_data, color='blue')
-# #plt.plot(data['Close'], color='red')
-# plt.title('Dow Jones Industrial Average Closing Price')
-# plt.xlabel('Date')
-# plt.ylabel('Close Price')
-# plt.grid(True)
-# plt.show()
+# Plot the 'Close' column
+plt.figure(figsize=(10,6))
+plt.plot(log_data, color='blue')
+#plt.plot(data['Close'], color='red')
+plt.title('Dow Jones Industrial Average Closing Price')
+plt.xlabel('Date')
+plt.ylabel('Close Price')
+plt.grid(True)
+plt.show()
 
 # Fit the model without the 'disp' parameter
 model_fit = model.fit()
@@ -34,19 +34,16 @@ print(model_fit.summary())
 forecast = model_fit.forecast(steps=10)
 
 # Create a new dataframe to store the forecast
-forecast_df = pd.DataFrame(forecast, columns=['Forecast'])
+forecast_df = pd.DataFrame(forecast, index=pd.date_range(start=data.index[-1], periods=10)[1:], columns=['Forecast'])
 
-# Create a new date range
-#forecast_df.index = pd.date_range(start=data.index[-1], periods=10)[1:]
-
-# # Plot the original data and the forecast
-# plt.figure(figsize=(10,6))
-# plt.plot(data['Close'], label='Original Data')
-# plt.plot(forecast_df, label='Forecast', linestyle='--')
-# plt.title('Dow Jones Industrial Average Closing Price Forecast')
-# plt.xlabel('Date')
-# plt.ylabel('Close Price')
-# plt.grid(True)
-# plt.legend()
-# plt.show()
+# Plot the original data and the forecast
+plt.figure(figsize=(10,6))
+plt.plot(data['Close'][-100:], label='Original Data')
+plt.plot(forecast_df, label='Forecast', linestyle='--',color='red')
+plt.title('Dow Jones Industrial Average Closing Price Forecast')
+plt.xlabel('Date')
+plt.ylabel('Close Price')
+plt.grid(True)
+plt.legend()
+plt.show()
 
