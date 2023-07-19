@@ -22,7 +22,9 @@ SS_1<-read_csv("data/000001ss.csv")
 NASDAQ<-read_csv("data/NASDAQ.csv")
 SZ399001<-read_csv("data/399001sz.csv")
 ```
-
+```{r}
+DJIA.tsd<-ts(DJIA[,"Close"]-DJIA[,"Open"])
+```
 
 ```{r}
 DJIA.ts <- ts(DJIA[,"Close"])
@@ -32,6 +34,8 @@ sz.ts<-ts(SZ399001[,"Close"])
 
 DJIA.tsd<-ts(DJIA[,"Close"]-DJIA[,"Open"])
 DJIA.return<-ts((DJIA[,"Close"]-DJIA[,"Open"])/DJIA[,"Open"])
+
+
 ss.tsd<-ts(SS_1[,"Close"]-SS_1[,"Open"])
 ss.return<-ts((SS_1[,"Close"]-SS_1[,"Open"])/SS_1[,"Open"])
 na.tsd<-ts(NASDAQ[,"Close"]-NASDAQ[,"Open"])
@@ -73,7 +77,7 @@ na.ts.holtd<-holt(na.ts,damped=TRUE, h=100)
 autoplot(na.ts.ses)
 autoplot(na.ts.holt)
 autoplot(na.ts.sesd)
-autoplot(na.ts.holtd)
+autoplot(na.ts.holtd,include=200)
 summary(na.ts.ses)
 summary(na.ts.holt)
 summary(na.ts.sesd)
@@ -81,6 +85,14 @@ summary(na.ts.holtd)
 res.holtd<-residuals(na.ts.holtd)
 test(res.holtd)
 ```
+```{r}
+na.log<-log(na.ts)
+autoplot(ets(na.log))
+checkresiduals(ets(na.log))
+na.log2<-window(na.log,start=5000)
+checkresiduals(ets(na.log2))
+```
+
 ```{r}
 checkresiduals(ss.tsd)
 ```
