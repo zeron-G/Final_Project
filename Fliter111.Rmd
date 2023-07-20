@@ -1,0 +1,77 @@
+---
+title: "FINAL"
+author: "Mia-Xueyiting Wang"
+date: "2023-07-20"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## R Markdown
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+
+```{r cars}
+summary(cars)
+```
+
+## Including Plots
+
+You can also embed plots, for example:
+
+```{r pressure, echo=FALSE}
+plot(pressure)
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+
+```{r}
+# Load the necessary libraries
+library(tidyquant)
+library(forecast)
+
+# Download the NASDAQ Composite Index data
+data <- tq_get("^IXIC", from = "1995-02-21")
+
+# The data is downloaded as a data frame
+# We'll use the adjusted closing prices
+str(data)
+data <- data$adjusted
+
+# Fit an ARIMA model
+model <- auto.arima(data)
+
+# Print the summary of the model
+print(summary(model))
+
+# Create a data frame to hold the AIC for each year
+aic_values <- data.frame(Year = integer(), AIC = numeric())
+
+# For each year from 1995 to the current year
+for (year in 1995:format(Sys.Date(), "%Y")) {
+  
+  # Extract the data for this year
+  yearly_data <- window(data, start = as.Date(paste(year, "01", "01", sep = "-")),
+                              end = as.Date(paste(year, "12", "31", sep = "-")))
+  
+  # Skip years with no data
+  if (length(yearly_data) == 0) next
+  
+  # Fit an ARIMA model
+  model <- auto.arima(yearly_data)
+  
+  # Save the AIC of the model for this year
+  aic_values <- rbind(aic_values, data.frame(Year = year, AIC = model$aic))
+}
+
+# Print the AIC for each year
+print(aic_values)
+
+# Print the year with the lowest AIC
+print(aic_values[which.min(aic_values$AIC),])
+```
+
