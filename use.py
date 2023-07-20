@@ -6,14 +6,16 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 
-start_date = "1995-02-20"
-end_date = "2023-07-17"
+# start_date = "1995-02-20"
+# end_date = "2023-07-17"
 data=pd.read_csv('data/DJIA.csv')
 data['Date'] = pd.to_datetime(data['Date'])
 log_data=np.log(data['Close'])
 model = ARIMA(log_data, order=(5,1,0))
 # Set 'Date' as the index
 data.set_index('Date', inplace=True)
+
+#以上为对数据的预处理，下面为模型的训练和预测
 
 # Plot the 'Close' column
 plt.figure(figsize=(10,6))
