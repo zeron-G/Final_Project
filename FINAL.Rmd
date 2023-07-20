@@ -69,6 +69,12 @@ test(sz.ts)
 test(sz.tsd)
 test(sz.return)
 ```
+
+```{r}
+na.diff<-diff(na.ts)
+autoplot(na.diff)
+```
+
 ```{r}
 na.ts.ses<-ses(na.ts, h=100)
 na.ts.holt<-holt(na.ts, h=100)
