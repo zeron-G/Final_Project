@@ -17,63 +17,48 @@ library(readr)
 ```
 
 ```{r}
-DJIA<-read_csv("data/DJIA.csv")
-SS_1<-read_csv("data/000001ss.csv")
-NASDAQ<-read_csv("data/NASDAQ.csv")
-SZ399001<-read_csv("data/399001sz.csv")
-```
-```{r}
-DJIA.tsd<-ts(DJIA[,"Close"]-DJIA[,"Open"])
+ss<-read_csv("data/000001ss.csv")
+na<-read_csv("data/NASDAQ.csv")
 ```
 
 ```{r}
-DJIA.ts <- ts(DJIA[,"Close"])
-ss.ts<-ts(SS_1[,"Close"])
-na.ts<-ts(NASDAQ[,"Close"])
-sz.ts<-ts(SZ399001[,"Close"])
-
-DJIA.tsd<-ts(DJIA[,"Close"]-DJIA[,"Open"])
-DJIA.return<-ts((DJIA[,"Close"]-DJIA[,"Open"])/DJIA[,"Open"])
-
-
-ss.tsd<-ts(SS_1[,"Close"]-SS_1[,"Open"])
-ss.return<-ts((SS_1[,"Close"]-SS_1[,"Open"])/SS_1[,"Open"])
-na.tsd<-ts(NASDAQ[,"Close"]-NASDAQ[,"Open"])
-na.return<-ts((NASDAQ[,"Close"]-NASDAQ[,"Open"])/NASDAQ[,"Open"])
-sz.tsd<-ts(SZ399001[,"Close"]-SZ399001[,"Open"])
-sz.return<-ts((SZ399001[,"Close"]-SZ399001[,"Open"])/SZ399001[,"Open"])
-
-
-autoplot(DJIA.ts)
-autoplot(DJIA.tsd)
-autoplot(DJIA.return)
-test(DJIA.ts)
-test(DJIA.tsd)
-test(DJIA.return)
-autoplot(ss.ts)
-autoplot(ss.tsd)
-autoplot(ss.return)
-test(ss.ts)
-test(ss.tsd)
-test(ss.return)
-autoplot(na.ts)
-autoplot(na.tsd)
-autoplot(na.return)
-test(na.ts)
-test(na.tsd)
-test(na.return)
-autoplot(sz.ts)
-autoplot(sz.tsd)
-autoplot(sz.return)
-test(sz.ts)
-test(sz.tsd)
-test(sz.return)
-```
-
-```{r}
+ss.ts<-ts(ss[,"Close"])
+na.ts<-ts(na[,"Close"])
+na.log<-ts(log(na[,"Close"]))
+ss.log<-ts(log(ss[,"Close"]))
 na.diff<-diff(na.ts)
-autoplot(na.diff)
+ss.diff<-diff(ss.ts)
+na.logd<-diff(na.log)
+ss.diff<-diff(ss.log)
 ```
+```{r}
+test(na.ts)
+test(na.diff)
+test(na.log)
+test(na.logd)
+```
+
+
+```{r}
+myts <- ts(na.log, frequency=30)
+myts.train <- window(myts,end=150)
+myts.test <- window(myts,start=150)
+
+autoplot(myts) +
+  autolayer(myts.train, series="Training") +
+  autolayer(myts.test, series="Test")
+fc <- auto.arima(myts.train)
+
+future <- forecast::forecast(fc, h=50)
+
+autoplot(future,h=100,include = 100)
+
+checkresiduals(fc)
+```
+```{r}
+accuracy(fc,myts.test)
+```
+
 
 ```{r}
 na.ts.ses<-ses(na.ts, h=100)
@@ -92,7 +77,16 @@ res.holtd<-residuals(na.ts.holtd)
 test(res.holtd)
 ```
 ```{r}
-na.arima<-auto.arima(na.ts)
+na.ts.log<-log(na.ts)
+autoplot(na.ts.log)
+test(na.ts.log)
+na.logd<-diff(na.ts.log)
+autoplot(na.logd)
+test(na.logd)
+```
+
+```{r}
+na.arima<-auto.arima(na.ts.log)
 autoplot(na.arima)
 future <- forecast::forecast(na.arima, h=12)
 autoplot(future,include=100)
@@ -121,36 +115,7 @@ autoplot(ss.ts.ses) +
   autolayer(ss.ts.ses$fitted)
 ss.ts.ses$model
 ```
-```{r}
-ss.ts.meanf <- meanf(ss.ts, h=20)
-autoplot(ss.ts.meanf)
-# Plot last 100 values of series with forecasts
-autoplot(ss.ts.meanf, include=100)
-ss.ts.naive <- naive(ss.ts, h=20)
-autoplot(ss.ts.naive)
-# Plot last 100 values of series with forecasts
-autoplot(ss.ts.naive, include=100)
-ss.ts.snaive <- snaive(ss.ts, h=20)
-autoplot(ss.ts.snaive)
-# Plot last 100 values of series with forecasts
-autoplot(ss.ts.snaive, include=100)
-ss.ts.rwf <- rwf(ss.ts, h=20)
-autoplot(ss.ts.rwf)
-# Plot last 100 values of series with forecasts
-autoplot(ss.ts.rwf, include=100)
-```
-```{r}
-myts <- ts(NASDAQ[,"Close"], frequency=12, start=c(1995-02-21))
-myts.train <- window(myts, end=c(2010-02-21))
-myts.test <- window(myts, start=2010-2-21)
 
-autoplot(myts) +
-  autolayer(myts.train, series="Training") +
-  autolayer(myts.test, series="Test")
-fc <- snaive(myts.train)
-autoplot(fc,h=100)
-checkresiduals(fc)
-```
 
 
 
