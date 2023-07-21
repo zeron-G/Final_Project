@@ -25,12 +25,20 @@ spx<-read_csv("data/SPX.csv")
 ```{r}
 dji.ts<-ts(dji[,"Close"])
 na.ts<-ts(na[,"Close"])
+spx.ts<-ts(spx[,"Close"])
+
 na.log<-ts(log(na[,"Close"]))
 dji.log<-ts(log(dji[,"Close"]))
+spx.log<-ts(log(spx[,"Close"]))
+
 na.diff<-diff(na.ts)
 dji.diff<-diff(dji.ts)
+spx.diff<-diff(spx.ts)
+
 na.logd<-diff(na.log)
-dji.diff<-diff(dji.log)
+dji.logd<-diff(dji.log)
+spx.logd<-diff(spx.log)
+
 ```
 ```{r}
 test(na.ts)
@@ -38,6 +46,20 @@ test(na.diff)
 test(na.log)
 test(na.logd)
 ```
+```{r}
+test(dji.ts)
+test(dji.diff)
+test(dji.log)
+test(dji.logd)
+```
+```{r}
+test(spx.ts)
+test(spx.diff)
+test(spx.log)
+test(spx.logd)
+```
+
+
 
 
 ```{r}
@@ -53,6 +75,7 @@ fc <- auto.arima(myts.train)
 future <- forecast::forecast(fc, h=20)
 autoplot(future,h=100,include = 100)
 checkresiduals(fc)
+accuracy(future,myts.test)
 ```
 ```{r}
 myts <- ts(dji.log, frequency=30)
@@ -67,12 +90,80 @@ fc <- auto.arima(myts.train)
 future <- forecast::forecast(fc, h=20)
 autoplot(future,h=100,include = 100)
 checkresiduals(fc)
-```
-
-
-```{r}
 accuracy(future,myts.test)
 ```
+```{r}
+myts <- ts(spx.log, frequency=30)
+myts.train <- window(myts,end=150)
+myts.test <- window(myts,start=150)
+
+autoplot(myts) +
+  autolayer(myts.train, series="Training") +
+  autolayer(myts.test, series="Test")
+
+fc <- auto.arima(myts.train)
+future <- forecast::forecast(fc, h=20)
+autoplot(future,h=100,include = 100)
+checkresiduals(fc)
+accuracy(future,myts.test)
+```
+
+
+
+
+
+ets
+```{r}
+myts <- ts(na.log, frequency=30)
+myts.train <- window(myts,end=150)
+myts.test <- window(myts,start=150)
+
+autoplot(myts) +
+  autolayer(myts.train, series="Training") +
+  autolayer(myts.test, series="Test")
+
+fc <- ets(myts.train)
+future <- forecast::forecast(fc, h=20)
+autoplot(future,h=100,include = 100)
+checkresiduals(fc)
+accuracy(future,myts.test)
+```
+```{r}
+myts <- ts(dji.log, frequency=30)
+myts.train <- window(myts,end=150)
+myts.test <- window(myts,start=150)
+
+autoplot(myts) +
+  autolayer(myts.train, series="Training") +
+  autolayer(myts.test, series="Test")
+
+fc <- ets(myts.train)
+future <- forecast::forecast(fc, h=20)
+autoplot(future,h=100,include = 100)
+checkresiduals(fc)
+accuracy(future,myts.test)
+```
+```{r}
+myts <- ts(spx.log, frequency=30)
+myts.train <- window(myts,end=150)
+myts.test <- window(myts,start=150)
+
+autoplot(myts) +
+  autolayer(myts.train, series="Training") +
+  autolayer(myts.test, series="Test")
+
+fc <- ets(myts.train)
+future <- forecast::forecast(fc, h=20)
+autoplot(future,h=100,include = 100)
+checkresiduals(fc)
+accuracy(future,myts.test)
+```
+
+
+
+
+
+
 
 
 ```{r}
