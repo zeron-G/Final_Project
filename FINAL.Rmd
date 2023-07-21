@@ -17,19 +17,20 @@ library(readr)
 ```
 
 ```{r}
-ss<-read_csv("data/000001ss.csv")
 na<-read_csv("data/NASDAQ.csv")
+dji<-read_csv("data/DJIA.csv")
+spx<-read_csv("data/SPX.csv")
 ```
 
 ```{r}
-ss.ts<-ts(ss[,"Close"])
+dji.ts<-ts(dji[,"Close"])
 na.ts<-ts(na[,"Close"])
 na.log<-ts(log(na[,"Close"]))
-ss.log<-ts(log(ss[,"Close"]))
+dji.log<-ts(log(dji[,"Close"]))
 na.diff<-diff(na.ts)
-ss.diff<-diff(ss.ts)
+dji.diff<-diff(dji.ts)
 na.logd<-diff(na.log)
-ss.diff<-diff(ss.log)
+dji.diff<-diff(dji.log)
 ```
 ```{r}
 test(na.ts)
@@ -53,6 +54,21 @@ future <- forecast::forecast(fc, h=20)
 autoplot(future,h=100,include = 100)
 checkresiduals(fc)
 ```
+```{r}
+myts <- ts(dji.log, frequency=30)
+myts.train <- window(myts,end=150)
+myts.test <- window(myts,start=150)
+
+autoplot(myts) +
+  autolayer(myts.train, series="Training") +
+  autolayer(myts.test, series="Test")
+
+fc <- auto.arima(myts.train)
+future <- forecast::forecast(fc, h=20)
+autoplot(future,h=100,include = 100)
+checkresiduals(fc)
+```
+
 
 ```{r}
 accuracy(future,myts.test)
@@ -91,15 +107,15 @@ future <- forecast::forecast(na.arima, h=12)
 autoplot(future,include=100)
 ```
 ```{r}
-ets(ss.ts)
-autoplot(forecast::forecast(ets(ss.ts)))
-str(ss.ts)
-head(ss.ts)
+ets(dji.ts)
+autoplot(forecast::forecast(ets(dji.ts)))
+str(dji.ts)
+head(dji.ts)
 
-ss.ts.ses <- ses(ss.ts, h = 400)
-autoplot(ss.ts.ses) +
-  autolayer(ss.ts.ses$fitted)
-ss.ts.ses$model
+dji.ts.ses <- ses(dji.ts, h = 400)
+autoplot(dji.ts.ses) +
+  autolayer(dji.ts.ses$fitted)
+dji.ts.ses$model
 ```
 
 
