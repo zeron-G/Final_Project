@@ -29,7 +29,7 @@ dji<-read_csv("data/DJIA.csv")
 spx<-read_csv("data/SPX.csv")
 ```
 ```{r}
-data<-spx.y5
+data<-spx.f5
 ```
 
 ```{r}
