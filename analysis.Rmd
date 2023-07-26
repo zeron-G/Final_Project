@@ -29,7 +29,7 @@ dji<-read_csv("data/DJIA.csv")
 spx<-read_csv("data/SPX.csv")
 ```
 ```{r}
-data<-na
+data<-spx.f30
 ```
 
 ```{r}
@@ -63,31 +63,6 @@ myts.train <- window(myts,end=t)
 myts.test <- window(myts,start=t+1)
 
 fc <- auto.arima(myts.train)
-future <- forecast::forecast(fc, h=(len-t))
-
-autoplot(myts) +
-  autolayer(myts.train, series="Training") +
-  autolayer(myts.test, series="Test")
-
-autoplot(future)
-
-p <- autoplot(myts) +
-  autolayer(myts.train, series="Training") +
-  autolayer(future, series="Forecast")
-
-p + autolayer(myts.test, series="Test")
-
-checkresiduals(fc)
-accuracy(future,myts.test)
-```
-```{r}
-len<-length(data.log)
-t<-floor(len*0.8)
-myts <- ts(data.log)
-myts.train <- window(myts,end=t)
-myts.test <- window(myts,start=t+1)
-
-fc <- ets(myts.train)
 future <- forecast::forecast(fc, h=(len-t))
 
 autoplot(myts) +
